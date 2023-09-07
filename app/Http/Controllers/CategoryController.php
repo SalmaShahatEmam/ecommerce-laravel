@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -26,7 +27,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //return view('');
+        return view('frontend.categories.create');
     }
 
     /**
@@ -39,9 +40,14 @@ class CategoryController extends Controller
             'description' =>'required'
         ]);
 
-        category::create($request->post());
+        //request merge slug
+        $request->merge([
+            'slug'=> Str::slug($request->post('name'))
+        ]);
 
-        return redirect()->route('categories')->with('success','Category has been created successfully.');
+        category::create($request->all());
+
+        return redirect()->route('dashboard.categories.index')->with('success','Category has been created successfully.');
     }
 
 
